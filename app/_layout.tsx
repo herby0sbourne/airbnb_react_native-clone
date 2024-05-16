@@ -42,6 +42,9 @@ SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
   const [loaded, error] = useFonts({
     Montserrat: require('../assets/fonts/Montserrat-400_600_700.ttf'),
+    Mon: require('../assets/fonts/Montserrat-Regular.ttf'),
+    Mont_sb: require('../assets/fonts/Montserrat-SemiBold.ttf'),
+    Mont_bold: require('../assets/fonts/Montserrat-Bold.ttf'),
     ...FontAwesome.font,
   });
 

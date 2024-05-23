@@ -23,10 +23,7 @@ const Page = () => {
 
   const { startOAuthFlow: appleAuth } = useOAuth({ strategy: 'oauth_apple' });
   const { startOAuthFlow: googleAuth } = useOAuth({ strategy: 'oauth_google' });
-  const { startOAuthFlow: facebookAuth } = useOAuth({
-    strategy: 'oauth_facebook',
-    // redirectUrl: 'exp://192.168.10.157:8081/--/(modals)/login',
-  });
+  const { startOAuthFlow: facebookAuth } = useOAuth({ strategy: 'oauth_facebook' });
 
   const onSelectAuth = async (strategy: Strategy) => {
     const selectAuth = {
@@ -36,9 +33,7 @@ const Page = () => {
     }[strategy];
 
     try {
-      const { createdSessionId, setActive, authSessionResult } = await selectAuth();
-      console.log({ createdSessionId });
-      console.log({ authSessionResult });
+      const { createdSessionId, setActive } = await selectAuth();
 
       if (createdSessionId) {
         setActive!({ session: createdSessionId });
@@ -48,7 +43,6 @@ const Page = () => {
       }
     } catch (error) {
       console.log('OAtuh Error', error);
-      console.log('OAtuh Error', JSON.stringify(error));
     }
   };
 

@@ -1,18 +1,12 @@
-import Colors from '@/constants/Colors';
-import Fonts from '@/constants/Fonts';
-import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { Link } from 'expo-router';
-import { useRef, useState } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-  FlatList,
-} from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
+import { useRef, useState } from 'react';
+import { Ionicons, MaterialIcons } from '@expo/vector-icons';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { View, Text, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
+
+import Fonts from '@/constants/Fonts';
+import Colors from '@/constants/Colors';
 
 const categories: {
   name: string;
@@ -48,7 +42,11 @@ const categories: {
   },
 ];
 
-const ExploreHeader = () => {
+interface Props {
+  onCategoryChange: (category: string) => void;
+}
+
+const ExploreHeader = ({ onCategoryChange }: Props) => {
   const flatListRef = useRef<FlatList>(null);
   const [activeIndex, setActiveIndex] = useState(0);
 
@@ -57,12 +55,13 @@ const ExploreHeader = () => {
 
     flatListRef.current?.scrollToIndex({
       index,
-      viewPosition: 0.5, // Adjust the position of the item in the FlatList (0 - left, 0.5 - center, 1 - right)
+      viewPosition: 0.5,
       animated: true,
       // viewOffset: 16,
     });
 
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    onCategoryChange(categories[index].name);
   };
 
   return (
@@ -87,8 +86,13 @@ const ExploreHeader = () => {
         </View>
 
         <FlatList
+          horizontal
+          style={{ flex: 1 }}
           ref={flatListRef}
           data={categories}
+          keyExtractor={(item) => item.name}
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{ gap: 20, paddingHorizontal: 16 }}
           renderItem={({ item, index }) => {
             return (
               <TouchableOpacity
@@ -114,11 +118,6 @@ const ExploreHeader = () => {
               </TouchableOpacity>
             );
           }}
-          keyExtractor={(item) => item.name}
-          style={{ flex: 1 }}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{ gap: 20, paddingHorizontal: 16 }}
         />
       </View>
     </SafeAreaView>

@@ -3,7 +3,14 @@ import Fonts from '@/constants/Fonts';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { Link } from 'expo-router';
 import { useRef, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+  FlatList,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 
@@ -42,18 +49,18 @@ const categories: {
 ];
 
 const ExploreHeader = () => {
-  const scrollRef = useRef<ScrollView>(null);
-  const itemRef = useRef<Array<TouchableOpacity | null>>([]);
+  const flatListRef = useRef<FlatList>(null);
   const [activeIndex, setActiveIndex] = useState(0);
 
   const selectCategory = (index: number) => {
-    const selected = itemRef.current[index];
     setActiveIndex(index);
 
-    // selected?.measure((x) => {
-    //   scrollRef.current?.scrollTo({ x: x - 16, y: 0, animated: true });
-    //   // scrollRef.current?.scrollTo({ x: x, y: 0, animated: true });
-    // });
+    flatListRef.current?.scrollToIndex({
+      index,
+      viewPosition: 0.5, // Adjust the position of the item in the FlatList (0 - left, 0.5 - center, 1 - right)
+      animated: true,
+      // viewOffset: 16,
+    });
 
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
   };
@@ -79,23 +86,12 @@ const ExploreHeader = () => {
           </TouchableOpacity>
         </View>
 
-        <ScrollView
-          ref={scrollRef}
-          // style={{ flex: 1 }}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{ alignItems: 'center', gap: 20, paddingHorizontal: 16 }}
-          onLayout={(event) => {
-            const layout = event.nativeEvent.layout;
-            // coordinate[item.key] = layout.x;
-            console.log({ layout });
-          }}
-        >
-          {categories.map((item, index) => {
+        <FlatList
+          ref={flatListRef}
+          data={categories}
+          renderItem={({ item, index }) => {
             return (
               <TouchableOpacity
-                key={index}
-                ref={(el) => (itemRef.current[index] = el)}
                 onPress={() => selectCategory(index)}
                 style={[
                   styles.categoriesBtn,
@@ -117,8 +113,13 @@ const ExploreHeader = () => {
                 </Text>
               </TouchableOpacity>
             );
-          })}
-        </ScrollView>
+          }}
+          keyExtractor={(item) => item.name}
+          style={{ flex: 1 }}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{ gap: 20, paddingHorizontal: 16 }}
+        />
       </View>
     </SafeAreaView>
   );

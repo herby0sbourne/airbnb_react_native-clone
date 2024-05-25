@@ -38,7 +38,6 @@ const categories: {
   {
     name: 'Countryside',
     icon: 'nature-people',
-    // id:crypto.randomUUID()
   },
 ];
 
@@ -51,15 +50,16 @@ const ExploreHeader = () => {
     const selected = itemRef.current[index];
     setActiveIndex(index);
 
-    selected?.measure((x) => {
-      scrollRef.current?.scrollTo({ x: x - 16, y: 0, animated: true });
-    });
+    // selected?.measure((x) => {
+    //   scrollRef.current?.scrollTo({ x: x - 16, y: 0, animated: true });
+    //   // scrollRef.current?.scrollTo({ x: x, y: 0, animated: true });
+    // });
 
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
+    <SafeAreaView style={{ backgroundColor: 'white' }}>
       <View style={styles.container}>
         <View style={styles.searchRow}>
           <Link href={'/(modals)/booking'} asChild>
@@ -80,50 +80,42 @@ const ExploreHeader = () => {
         </View>
 
         <ScrollView
-          style={{ flex: 1 }}
-          scrollEnabled={true}
-          contentContainerStyle={{ paddingBottom: 20 }} // Adjust padding as necessary
-          // horizontal
-          // showsHorizontalScrollIndicator={false}
-          // ref={scrollRef}
-          // contentContainerStyle={{ alignItems: 'center', gap: 20, paddingHorizontal: 16 }}
+          ref={scrollRef}
+          // style={{ flex: 1 }}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{ alignItems: 'center', gap: 20, paddingHorizontal: 16 }}
+          onLayout={(event) => {
+            const layout = event.nativeEvent.layout;
+            // coordinate[item.key] = layout.x;
+            console.log({ layout });
+          }}
         >
           {categories.map((item, index) => {
             return (
-              <View
+              <TouchableOpacity
                 key={index}
-                style={{
-                  width: '100%',
-                  // height: 100,
-                  backgroundColor: 'pink',
-                  marginVertical: 10,
-                }} // Adjust height and margin as necessary
+                ref={(el) => (itemRef.current[index] = el)}
+                onPress={() => selectCategory(index)}
+                style={[
+                  styles.categoriesBtn,
+                  activeIndex === index && styles.categoriesBtnActive,
+                ]}
               >
-                <Text>{item.name}</Text>
-              </View>
-              // <TouchableOpacity
-              //   key={index}
-              //   ref={(el) => (itemRef.current[index] = el)}
-              //   onPress={() => selectCategory(index)}
-              //   style={[
-              //     styles.categoriesBtn,
-              //     activeIndex === index && styles.categoriesBtnActive,
-              //   ]}
-              // >
-              //   <MaterialIcons
-              //     name={item.icon}
-              //     size={24}
-              //     color={activeIndex === index ? 'black' : '#9f9f9f'}
-              //   />
-              //   <Text
-              //     style={[
-              //       styles.categoryText,
-              //       activeIndex === index && styles.categoryTextActive,
-              //     ]}
-              //   >
-              //     {item.name}
-              //   </Text>
-              // </TouchableOpacity>
+                <MaterialIcons
+                  name={item.icon}
+                  size={24}
+                  color={activeIndex === index ? 'black' : '#9f9f9f'}
+                />
+                <Text
+                  style={[
+                    styles.categoryText,
+                    activeIndex === index && styles.categoryTextActive,
+                  ]}
+                >
+                  {item.name}
+                </Text>
+              </TouchableOpacity>
             );
           })}
         </ScrollView>
@@ -135,7 +127,7 @@ const ExploreHeader = () => {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#fff',
-    height: 200,
+    height: 140,
     elevation: 2,
     shadowColor: '#000',
     shadowOpacity: 0.1,

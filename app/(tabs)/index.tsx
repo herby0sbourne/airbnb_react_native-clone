@@ -1,11 +1,28 @@
-import { Link } from 'expo-router';
-import { View, Text } from 'react-native';
+import { Stack } from 'expo-router';
+import { View } from 'react-native';
+import { useMemo, useState } from 'react';
+
+import Listings from '@/components/Listings';
+import ExploreHeader from '@/components/ExploreHeader';
+
+import { Listing } from '@/types';
+import listingsData from '@/assets/data/air-bnb-listings.json';
+
 const Page = () => {
+  const [category, setCategory] = useState('Tiny Home');
+  const items = useMemo(() => listingsData as Listing[], []);
+
+  const handleCategoryChange = (category: string) => {
+    setCategory(category);
+  };
   return (
-    <View>
-      <Link href={'/(modals)/login'}>Login</Link>
-      <Link href={'/(modals)/booking'}>Booking</Link>
-      <Link href={'/listing/1234'}>Details Screen</Link>
+    <View style={{ flex: 1 }}>
+      <Stack.Screen
+        options={{
+          header: () => <ExploreHeader onCategoryChange={handleCategoryChange} />,
+        }}
+      />
+      <Listings category={category} listings={items} />
     </View>
   );
 };

@@ -8,6 +8,7 @@ import { useEffect } from 'react';
 import { TouchableOpacity } from 'react-native';
 import Constants from 'expo-constants';
 import { ClerkProvider, useAuth } from '@clerk/clerk-expo';
+import Fonts from '@/constants/Fonts';
 
 const tokenCache = {
   async getToken(key: string) {
@@ -94,8 +95,7 @@ function RootLayoutNav() {
           presentation: 'modal',
           headerTitleAlign: 'center',
           headerTitleStyle: {
-            fontFamily: 'Montserrat',
-            fontWeight: 'bold',
+            fontFamily: Fonts.fontNormal,
           },
           headerLeft: () => (
             <TouchableOpacity onPress={() => router.back()}>
@@ -104,7 +104,10 @@ function RootLayoutNav() {
           ),
         }}
       />
-      <Stack.Screen name="listing/[id]" options={{ headerTitle: '' }} />
+      <Stack.Screen
+        name="listing/[id]"
+        options={{ headerTitle: '', headerTransparent: true }}
+      />
       <Stack.Screen
         name="(modals)/booking"
         options={{

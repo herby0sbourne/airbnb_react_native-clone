@@ -39,3 +39,4 @@ ios/
 .env
 .idea/
 code
+/.vscode/settings.json

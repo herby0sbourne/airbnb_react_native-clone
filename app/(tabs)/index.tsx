@@ -15,6 +15,7 @@ const Page = () => {
   const handleCategoryChange = (category: string) => {
     setCategory(category);
   };
+
   return (
     <View style={{ flex: 1 }}>
       <Stack.Screen
@@ -22,7 +23,7 @@ const Page = () => {
           header: () => <ExploreHeader onCategoryChange={handleCategoryChange} />,
         }}
       />
-      <Listings category={category} listings={items} />
+      <Listings category={category} listings={items.toSpliced(2)} />
     </View>
   );
 };

@@ -1,9 +1,9 @@
-import Fonts from '@/constants/Fonts';
-import { defaultStyles } from '@/constants/Styles';
-import { Listing } from '@/types';
-import { Ionicons } from '@expo/vector-icons';
-import { Link } from 'expo-router';
-import { memo, useEffect, useRef, useState } from 'react';
+import Fonts from "@/constants/Fonts";
+import { defaultStyles } from "@/constants/Styles";
+import { Listing } from "@/types";
+import { Ionicons } from "@expo/vector-icons";
+import { Link } from "expo-router";
+import { memo, useEffect, useRef, useState } from "react";
 import {
   View,
   Text,
@@ -12,8 +12,8 @@ import {
   StyleSheet,
   Image,
   ListRenderItem,
-} from 'react-native';
-import Animated, { FadeInRight, FadeOutLeft } from 'react-native-reanimated';
+} from "react-native";
+import Animated, { FadeInRight, FadeOutLeft } from "react-native-reanimated";
 
 interface Props {
   listings: Listing[];
@@ -25,7 +25,7 @@ const Listings = ({ category, listings }: Props) => {
   const listRef = useRef<FlatList>(null);
 
   useEffect(() => {
-    console.log('reloaded', listings.length);
+    console.log("reloaded", listings.length);
     setIsLoading(true);
 
     setTimeout(() => {
@@ -42,16 +42,19 @@ const Listings = ({ category, listings }: Props) => {
             entering={FadeInRight}
             exiting={FadeOutLeft}
           >
-            <Image source={{ uri: item.medium_url || '' }} style={styles.image} />
+            <Image
+              source={{ uri: item.medium_url || "" }}
+              style={styles.image}
+            />
             <TouchableOpacity style={styles.heartBtn}>
-              <Ionicons name="heart-outline" size={24} color={'black'} />
+              <Ionicons name="heart-outline" size={24} color={"black"} />
             </TouchableOpacity>
 
             <View>
               <View style={styles.topRow}>
                 <Text style={styles.name}>{item.name}</Text>
                 <View style={styles.ratings}>
-                  <Ionicons name="star" size={14} color={'black'} />
+                  <Ionicons name="star" size={14} color={"black"} />
                   <Text style={{ fontFamily: Fonts.fontSemiBold }}>
                     {(item.review_scores_rating ?? 0) / 20}
                   </Text>
@@ -59,9 +62,13 @@ const Listings = ({ category, listings }: Props) => {
               </View>
 
               <View>
-                <Text style={{ fontFamily: Fonts.fontNormal }}>{item.room_type}</Text>
-                <View style={{ flexDirection: 'row', gap: 4 }}>
-                  <Text style={{ fontFamily: Fonts.fontSemiBold }}>${item.price}</Text>
+                <Text style={{ fontFamily: Fonts.fontNormal }}>
+                  {item.room_type}
+                </Text>
+                <View style={{ flexDirection: "row", gap: 4 }}>
+                  <Text style={{ fontFamily: Fonts.fontSemiBold }}>
+                    ${item.price}
+                  </Text>
                   <Text style={{ fontFamily: Fonts.fontNormal }}>night</Text>
                 </View>
               </View>
@@ -94,25 +101,27 @@ const styles = StyleSheet.create({
   listing: {
     padding: 16,
     gap: 10,
-    marginVertical: 16,
+    // marginVertical: 16,
+    marginBottom: 15,
+    backgroundColor: "pink",
   },
   image: {
-    width: '100%',
+    width: "100%",
     height: 300,
     borderRadius: 10,
   },
   heartBtn: {
-    position: 'absolute',
+    position: "absolute",
     right: 30,
     top: 30,
   },
   topRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   name: { fontSize: 14, fontFamily: Fonts.fontSemiBold },
-  ratings: { flexDirection: 'row', alignItems: 'center', gap: 5 },
+  ratings: { flexDirection: "row", alignItems: "center", gap: 5 },
 });
 
 export default Listings;

@@ -1,14 +1,15 @@
-import { Ionicons } from '@expo/vector-icons';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { useFonts } from 'expo-font';
-import { Stack, useRouter } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import * as SecureStore from 'expo-secure-store';
-import { useEffect } from 'react';
-import { TouchableOpacity } from 'react-native';
-import Constants from 'expo-constants';
-import { ClerkProvider, useAuth } from '@clerk/clerk-expo';
-import Fonts from '@/constants/Fonts';
+import { Ionicons } from "@expo/vector-icons";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
+import { useFonts } from "expo-font";
+import { Stack, useRouter } from "expo-router";
+import * as SplashScreen from "expo-splash-screen";
+import * as SecureStore from "expo-secure-store";
+import { useEffect } from "react";
+import { TouchableOpacity } from "react-native";
+import Constants from "expo-constants";
+import { ClerkProvider, useAuth } from "@clerk/clerk-expo";
+import Fonts from "@/constants/Fonts";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 const tokenCache = {
   async getToken(key: string) {
@@ -30,11 +31,11 @@ const tokenCache = {
 export {
   // Catch any errors thrown by the Layout component.
   ErrorBoundary,
-} from 'expo-router';
+} from "expo-router";
 
 export const unstable_settings = {
   // Ensure that reloading on `/modal` keeps a back button present.
-  initialRouteName: '(tabs)',
+  initialRouteName: "(tabs)",
 };
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -42,10 +43,10 @@ SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const [loaded, error] = useFonts({
-    Montserrat: require('../assets/fonts/Montserrat-400_600_700.ttf'),
-    Mon: require('../assets/fonts/Montserrat-Regular.ttf'),
-    Mont_sb: require('../assets/fonts/Montserrat-SemiBold.ttf'),
-    Mont_bold: require('../assets/fonts/Montserrat-Bold.ttf'),
+    Montserrat: require("../assets/fonts/Montserrat-400_600_700.ttf"),
+    Mon: require("../assets/fonts/Montserrat-Regular.ttf"),
+    Mont_sb: require("../assets/fonts/Montserrat-SemiBold.ttf"),
+    Mont_bold: require("../assets/fonts/Montserrat-Bold.ttf"),
     ...FontAwesome.font,
   });
 
@@ -69,7 +70,9 @@ export default function RootLayout() {
       publishableKey={Constants.expoConfig?.extra!.clerkPublishableKey}
       tokenCache={tokenCache}
     >
-      <RootLayoutNav />
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <RootLayoutNav />
+      </GestureHandlerRootView>
     </ClerkProvider>
   );
 }
@@ -80,7 +83,7 @@ function RootLayoutNav() {
 
   useEffect(() => {
     if (isLoaded && !isSignedIn) {
-      router.push('/(modals)/login');
+      router.push("/(modals)/login");
     }
   }, [isLoaded]);
 
@@ -90,10 +93,10 @@ function RootLayoutNav() {
       <Stack.Screen
         name="(modals)/login"
         options={{
-          title: 'Log in or sign up',
-          animation: 'slide_from_bottom',
-          presentation: 'modal',
-          headerTitleAlign: 'center',
+          title: "Log in or sign up",
+          animation: "slide_from_bottom",
+          presentation: "modal",
+          headerTitleAlign: "center",
           headerTitleStyle: {
             fontFamily: Fonts.fontNormal,
           },
@@ -106,13 +109,13 @@ function RootLayoutNav() {
       />
       <Stack.Screen
         name="listing/[id]"
-        options={{ headerTitle: '', headerTransparent: true }}
+        options={{ headerTitle: "", headerTransparent: true }}
       />
       <Stack.Screen
         name="(modals)/booking"
         options={{
-          presentation: 'transparentModal',
-          animation: 'fade',
+          presentation: "transparentModal",
+          animation: "fade",
           headerLeft: () => (
             <TouchableOpacity onPress={() => router.back()}>
               <Ionicons name="close-outline" size={28} />

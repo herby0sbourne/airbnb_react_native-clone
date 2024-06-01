@@ -21,7 +21,8 @@ const ListingsBottomSheet = ({ listings, category }: Props) => {
 
   const onPressShowMap = () => {
     bottomSheetRef.current?.collapse();
-    bottomSheetListRef.current?.scrollToTop();
+    // bottomSheetListRef.current?.scrollToTop();
+    bottomSheetListRef.current?.scrollToOffset({ animated: true, offset: 0 });
   };
 
   return (

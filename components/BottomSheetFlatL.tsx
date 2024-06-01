@@ -15,6 +15,7 @@ interface Props {
 
 const BottomSheetFlatL = ({ category, listings }: Props) => {
   const [isLoading, setIsLoading] = useState(false);
+  // @ts-ignore
   const listRef = useRef<BottomSheetFlatList>(null);
 
   useEffect(() => {
@@ -26,6 +27,13 @@ const BottomSheetFlatL = ({ category, listings }: Props) => {
   }, [category]);
 
   const ListingCardItem: React.FC<{ item: Listing }> = memo(({ item }) => {
+    const handleImageError = () => {
+      setFallbackImageSource(require("../assets/images/fallBackImage.jpg"));
+    };
+
+    const [imageSource, setImageSource] = useState({ uri: item.medium_url });
+    const [fallbackImageSource, setFallbackImageSource] = useState(null);
+
     return (
       <Link href={`/listing/${item.id}`} asChild>
         <TouchableOpacity>
@@ -35,8 +43,9 @@ const BottomSheetFlatL = ({ category, listings }: Props) => {
             exiting={FadeOutLeft}
           >
             <Image
-              source={{ uri: item.medium_url || "" }}
+              source={fallbackImageSource || imageSource}
               style={styles.image}
+              onError={handleImageError}
             />
             <TouchableOpacity style={styles.heartBtn}>
               <Ionicons name="heart-outline" size={24} color={"black"} />
@@ -95,7 +104,6 @@ const styles = StyleSheet.create({
     gap: 10,
     // marginVertical: 16,
     marginBottom: 15,
-    backgroundColor: "pink",
   },
   image: {
     width: "100%",

@@ -1,22 +1,35 @@
-import Fonts from "@/constants/Fonts";
-import { defaultStyles } from "@/constants/Styles";
+import {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from "react";
+import { View } from "react-native";
+import {
+  BottomSheetFlatList,
+  BottomSheetFlatListMethods,
+} from "@gorhom/bottom-sheet";
+
+import ListingCardItem from "@/components/ListingCardItem";
+
 import { Listing } from "@/types";
-import { Ionicons } from "@expo/vector-icons";
-import { Link } from "expo-router";
-import { memo, useEffect, useRef, useState } from "react";
-import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native";
-import Animated, { FadeInRight, FadeOutLeft } from "react-native-reanimated";
-import { BottomSheetFlatList } from "@gorhom/bottom-sheet";
+import { defaultStyles } from "@/constants/Styles";
 
 interface Props {
   listings: Listing[];
   category: string;
 }
 
-const BottomSheetFlatL = ({ category, listings }: Props) => {
+const BottomSheetFlatL = forwardRef(({ category, listings }: Props, ref) => {
   const [isLoading, setIsLoading] = useState(false);
-  // @ts-ignore
-  const listRef = useRef<BottomSheetFlatList>(null);
+  const listRef = useRef<BottomSheetFlatListMethods>(null);
+
+  useImperativeHandle(ref, () => ({
+    scrollToTop: () => {
+      listRef.current?.scrollToOffset({ animated: true, offset: 0 });
+    },
+  }));
 
   useEffect(() => {
     setIsLoading(true);
@@ -26,64 +39,10 @@ const BottomSheetFlatL = ({ category, listings }: Props) => {
     }, 200);
   }, [category]);
 
-  const ListingCardItem: React.FC<{ item: Listing }> = memo(({ item }) => {
-    const handleImageError = () => {
-      setFallbackImageSource(require("../assets/images/fallBackImage.jpg"));
-    };
-
-    const [imageSource, setImageSource] = useState({ uri: item.medium_url });
-    const [fallbackImageSource, setFallbackImageSource] = useState(null);
-
-    return (
-      <Link href={`/listing/${item.id}`} asChild>
-        <TouchableOpacity>
-          <Animated.View
-            style={styles.listing}
-            entering={FadeInRight}
-            exiting={FadeOutLeft}
-          >
-            <Image
-              source={fallbackImageSource || imageSource}
-              style={styles.image}
-              onError={handleImageError}
-            />
-            <TouchableOpacity style={styles.heartBtn}>
-              <Ionicons name="heart-outline" size={24} color={"black"} />
-            </TouchableOpacity>
-
-            <View>
-              <View style={styles.topRow}>
-                <Text style={styles.name}>{item.name}</Text>
-                <View style={styles.ratings}>
-                  <Ionicons name="star" size={14} color={"black"} />
-                  <Text style={{ fontFamily: Fonts.fontSemiBold }}>
-                    {(item.review_scores_rating ?? 0) / 20}
-                  </Text>
-                </View>
-              </View>
-
-              <View>
-                <Text style={{ fontFamily: Fonts.fontNormal }}>
-                  {item.room_type}
-                </Text>
-                <View style={{ flexDirection: "row", gap: 4 }}>
-                  <Text style={{ fontFamily: Fonts.fontSemiBold }}>
-                    ${item.price}
-                  </Text>
-                  <Text style={{ fontFamily: Fonts.fontNormal }}>night</Text>
-                </View>
-              </View>
-            </View>
-          </Animated.View>
-        </TouchableOpacity>
-      </Link>
-    );
-  });
-
   return (
     <View style={defaultStyles.container}>
       <BottomSheetFlatList
-        // ref={listRef}
+        ref={listRef}
         renderItem={({ item }) => <ListingCardItem item={item} />}
         data={isLoading ? [] : listings}
         keyExtractor={(item) => item.id.toString()}
@@ -96,32 +55,6 @@ const BottomSheetFlatL = ({ category, listings }: Props) => {
       />
     </View>
   );
-};
-
-const styles = StyleSheet.create({
-  listing: {
-    padding: 16,
-    gap: 10,
-    // marginVertical: 16,
-    marginBottom: 15,
-  },
-  image: {
-    width: "100%",
-    height: 300,
-    borderRadius: 10,
-  },
-  heartBtn: {
-    position: "absolute",
-    right: 30,
-    top: 30,
-  },
-  topRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  name: { fontSize: 14, fontFamily: Fonts.fontSemiBold },
-  ratings: { flexDirection: "row", alignItems: "center", gap: 5 },
 });
 
 export default BottomSheetFlatL;

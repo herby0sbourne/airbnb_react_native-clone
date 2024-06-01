@@ -1,11 +1,5 @@
-import {
-  forwardRef,
-  useEffect,
-  useImperativeHandle,
-  useRef,
-  useState,
-} from "react";
-import { FlatList, View } from "react-native";
+import { forwardRef, useEffect, useState } from "react";
+import { View } from "react-native";
 import {
   BottomSheetFlatList,
   BottomSheetFlatListMethods,

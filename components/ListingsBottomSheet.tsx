@@ -1,4 +1,4 @@
-import { useMemo, useRef } from "react";
+import { useCallback, useMemo, useRef } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import BottomSheet, { BottomSheetFlatListMethods } from "@gorhom/bottom-sheet";
@@ -8,6 +8,11 @@ import BottomSheetFlatL from "@/components/BottomSheetFlatL";
 import { Listing } from "@/types";
 import Fonts from "@/constants/Fonts";
 import Colors from "@/constants/Colors";
+import {
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
 
 interface Props {
   listings: Listing[];
@@ -17,6 +22,7 @@ interface Props {
 const ListingsBottomSheet = ({ listings, category }: Props) => {
   const bottomSheetRef = useRef<BottomSheet>(null);
   const bottomSheetListRef = useRef<BottomSheetFlatListMethods>(null);
+  const borderRadius = useSharedValue(10);
   const snapPoints = useMemo(() => ["10%", "100%"], []);
 
   const onPressShowMap = () => {
@@ -25,6 +31,28 @@ const ListingsBottomSheet = ({ listings, category }: Props) => {
     bottomSheetListRef.current?.scrollToOffset({ animated: true, offset: 0 });
   };
 
+  const handleSheetChanges = useCallback(
+    (index: number) => {
+      // console.log("handleSheetChanges", index);
+      if (index === snapPoints.length - 1) {
+        // Bottom sheet is fully open
+
+        borderRadius.value = withTiming(0, { duration: 200 });
+        return;
+      }
+
+      // Bottom sheet is not fully open
+      borderRadius.value = withTiming(10, { duration: 200 });
+    },
+    [snapPoints],
+  );
+
+  const animatedStyles = useAnimatedStyle(() => {
+    return {
+      borderRadius: borderRadius.value,
+    };
+  });
+
   return (
     <BottomSheet
       index={1}
@@ -32,7 +60,8 @@ const ListingsBottomSheet = ({ listings, category }: Props) => {
       snapPoints={snapPoints}
       // enablePanDownToClose={true}
       handleIndicatorStyle={{ backgroundColor: Colors.gray }}
-      style={styles.sheetContainer}
+      onChange={handleSheetChanges}
+      style={[styles.sheetContainer, animatedStyles]}
     >
       <View style={{ flex: 1 }}>
         <BottomSheetFlatL

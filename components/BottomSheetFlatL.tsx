@@ -1,5 +1,5 @@
 import { forwardRef, useEffect, useState } from "react";
-import { View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import {
   BottomSheetFlatList,
   BottomSheetFlatListMethods,
@@ -9,6 +9,7 @@ import ListingCardItem from "@/components/ListingCardItem";
 
 import { Listing } from "@/types";
 import { defaultStyles } from "@/constants/Styles";
+import Fonts from "@/constants/Fonts";
 
 interface Props {
   listings: Listing[];
@@ -39,6 +40,9 @@ const BottomSheetFlatL = forwardRef<BottomSheetFlatListMethods, Props>(
         <BottomSheetFlatList
           ref={ref}
           renderItem={({ item }) => <ListingCardItem item={item} />}
+          ListHeaderComponent={
+            <Text style={styles.details}>{listings.length} Homes</Text>
+          }
           data={isLoading ? [] : listings}
           keyExtractor={(item) => item.id.toString()}
           // Optimize options
@@ -52,5 +56,13 @@ const BottomSheetFlatL = forwardRef<BottomSheetFlatListMethods, Props>(
     );
   },
 );
+
+const styles = StyleSheet.create({
+  details: {
+    fontFamily: Fonts.fontSemiBold,
+    marginTop: 4,
+    textAlign: "center",
+  },
+});
 
 export default BottomSheetFlatL;

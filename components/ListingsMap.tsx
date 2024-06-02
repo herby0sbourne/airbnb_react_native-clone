@@ -7,6 +7,7 @@ import { Listing } from "@/types";
 import { Cluster } from "@/types/Cluster";
 
 import Fonts from "@/constants/Fonts";
+import { memo } from "react";
 
 interface Props {
   listings: Listing[];
@@ -19,7 +20,7 @@ const INITIAL_REGION = {
   longitudeDelta: 0.0421,
 };
 
-const ListingsMap = ({ listings }: Props) => {
+const ListingsMap = memo(({ listings }: Props) => {
   const router = useRouter();
 
   const onMarkerPress = (listing: Listing) => {
@@ -86,7 +87,7 @@ const ListingsMap = ({ listings }: Props) => {
       </MapView>
     </View>
   );
-};
+});
 
 const styles = StyleSheet.create({
   container: {

@@ -3,6 +3,7 @@ import {useEffect, useState} from "react";
 import {Ionicons} from "@expo/vector-icons";
 import {useAuth, useUser} from "@clerk/clerk-expo";
 import {SafeAreaView} from "react-native-safe-area-context";
+import * as ImagePicker from "expo-image-picker";
 import {
   View,
   Text,
@@ -25,13 +26,13 @@ const Page = () => {
   const [email, setEmail] = useState(user?.emailAddresses[0].emailAddress);
   const [edit, setEdit] = useState(false);
 
-  useEffect(() => {
-    if (!user) return;
-
-    // setFirstName(user.firstName);
-    // setLastName(user.lastName);
-    // setEmail(user?.emailAddresses[0].emailAddress);
-  }, [user]);
+  // useEffect(() => {
+  //   if (!user) return;
+  //
+  //   // setFirstName(user.firstName);
+  //   // setLastName(user.lastName);
+  //   // setEmail(user?.emailAddresses[0].emailAddress);
+  // }, [user]);
 
   const updateUser = async () => {
     if (!firstName || !lastName) return;
@@ -47,7 +48,21 @@ const Page = () => {
     }
   };
 
-  const addImage = async () => {};
+  const addImage = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      quality: 0.75,
+      base64: true,
+    });
+
+    if (!result.canceled) {
+      const base64 = `data:image/png;base64,${result.assets[0].base64}`;
+      user?.setProfileImage({
+        file: base64,
+      });
+    }
+  };
 
   return (
     <SafeAreaView style={{flex: 1}}>

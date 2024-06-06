@@ -1,29 +1,31 @@
-import { useRouter } from 'expo-router';
-import { useOAuth } from '@clerk/clerk-expo';
-import { Ionicons } from '@expo/vector-icons';
-import * as WebBrowser from 'expo-web-browser';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
+import {useRouter} from "expo-router";
+import {useOAuth} from "@clerk/clerk-expo";
+import {Ionicons} from "@expo/vector-icons";
+import * as WebBrowser from "expo-web-browser";
+import {View, Text, StyleSheet, TextInput, TouchableOpacity} from "react-native";
 
-import Colors from '@/constants/Colors';
-import Fonts from '@/constants/Fonts';
-import { defaultStyles } from '@/constants/Styles';
-import { useWarmUpBrowser } from '@/hooks/useWarmUpBrowser';
+import Colors from "@/constants/Colors";
+import Fonts from "@/constants/Fonts";
+import {defaultStyles} from "@/constants/Styles";
+import {useWarmUpBrowser} from "@/hooks/useWarmUpBrowser";
 
 WebBrowser.maybeCompleteAuthSession();
 
 enum Strategy {
-  Google = 'oauth_google',
-  Apple = 'oauth_apple',
-  Facebook = 'oauth_facebook',
+  Google = "oauth_google",
+  Apple = "oauth_apple",
+  Facebook = "oauth_facebook",
 }
 
 const Page = () => {
   useWarmUpBrowser();
   const router = useRouter();
 
-  const { startOAuthFlow: appleAuth } = useOAuth({ strategy: 'oauth_apple' });
-  const { startOAuthFlow: googleAuth } = useOAuth({ strategy: 'oauth_google' });
-  const { startOAuthFlow: facebookAuth } = useOAuth({ strategy: 'oauth_facebook' });
+  const {startOAuthFlow: appleAuth} = useOAuth({strategy: "oauth_apple"});
+  const {startOAuthFlow: googleAuth} = useOAuth({strategy: "oauth_google"});
+  const {startOAuthFlow: facebookAuth} = useOAuth({
+    strategy: "oauth_facebook",
+  });
 
   const onSelectAuth = async (strategy: Strategy) => {
     const selectAuth = {
@@ -33,16 +35,16 @@ const Page = () => {
     }[strategy];
 
     try {
-      const { createdSessionId, setActive } = await selectAuth();
+      const {createdSessionId, setActive} = await selectAuth();
 
       if (createdSessionId) {
-        setActive!({ session: createdSessionId });
-        console.log('i ran');
+        setActive!({session: createdSessionId});
+        console.log("i ran");
 
         // router.back();
       }
     } catch (error) {
-      console.log('OAtuh Error', error);
+      console.log("OAtuh Error", error);
     }
   };
 
@@ -51,7 +53,7 @@ const Page = () => {
       <TextInput
         autoCapitalize="none"
         placeholder="Email"
-        style={[defaultStyles.inputField, { marginBottom: 30 }]}
+        style={[defaultStyles.inputField, {marginBottom: 30}]}
       />
       <TouchableOpacity style={defaultStyles.btn}>
         <Text style={defaultStyles.btnText}>Continue</Text>
@@ -63,7 +65,7 @@ const Page = () => {
         <View style={styles.line}></View>
       </View>
 
-      <View style={{ gap: 20 }}>
+      <View style={{gap: 20}}>
         <TouchableOpacity style={styles.btnOutline}>
           <Ionicons name="call-outline" style={defaultStyles.btnIcon} size={24} />
           <Text style={styles.btnOutlineText}>Continue with phone</Text>
@@ -71,24 +73,21 @@ const Page = () => {
 
         <TouchableOpacity
           style={styles.btnOutline}
-          onPress={() => onSelectAuth(Strategy.Apple)}
-        >
+          onPress={() => onSelectAuth(Strategy.Apple)}>
           <Ionicons name="logo-apple" style={defaultStyles.btnIcon} size={24} />
           <Text style={styles.btnOutlineText}>Continue with Apple</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.btnOutline}
-          onPress={() => onSelectAuth(Strategy.Google)}
-        >
+          onPress={() => onSelectAuth(Strategy.Google)}>
           <Ionicons name="logo-google" style={defaultStyles.btnIcon} size={24} />
           <Text style={styles.btnOutlineText}>Continue with Google</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.btnOutline}
-          onPress={() => onSelectAuth(Strategy.Facebook)}
-        >
+          onPress={() => onSelectAuth(Strategy.Facebook)}>
           <Ionicons name="logo-facebook" style={defaultStyles.btnIcon} size={24} />
           <Text style={styles.btnOutlineText}>Continue with Facebook</Text>
         </TouchableOpacity>
@@ -100,18 +99,18 @@ const Page = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: "white",
     padding: 26,
   },
   line: {
     flex: 1,
-    borderBottomColor: 'black',
+    borderBottomColor: "black",
     borderBottomWidth: StyleSheet.hairlineWidth,
   },
   seperatorView: {
-    flexDirection: 'row',
+    flexDirection: "row",
     gap: 10,
-    alignItems: 'center',
+    alignItems: "center",
     marginVertical: 30,
   },
   seperator: {
@@ -119,18 +118,18 @@ const styles = StyleSheet.create({
     color: Colors.gray,
   },
   btnOutline: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
     borderWidth: 1,
     borderColor: Colors.gray,
     height: 50,
     borderRadius: 8,
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexDirection: 'row',
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "row",
     paddingHorizontal: 10,
   },
   btnOutlineText: {
-    color: 'black',
+    color: "black",
     fontSize: 16,
     fontFamily: Fonts.fontSemiBold,
   },

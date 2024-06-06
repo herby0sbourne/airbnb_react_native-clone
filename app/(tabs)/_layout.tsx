@@ -1,7 +1,6 @@
-import Colors from '@/constants/Colors';
-import { FontAwesome5, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
-import { Tabs } from 'expo-router';
-import { View, Text } from 'react-native';
+import {Tabs} from "expo-router";
+import {FontAwesome5, Ionicons, MaterialCommunityIcons} from "@expo/vector-icons";
+import Colors from "@/constants/Colors";
 
 const Layout = () => {
   return (
@@ -9,16 +8,15 @@ const Layout = () => {
       screenOptions={{
         tabBarActiveTintColor: Colors.primary,
         tabBarLabelStyle: {
-          fontFamily: 'Montserrat',
+          fontFamily: "Montserrat",
           fontWeight: 700,
         },
-      }}
-    >
+      }}>
       <Tabs.Screen
         name="index"
         options={{
-          tabBarLabel: 'Explore',
-          tabBarIcon: ({ color, size }) => (
+          tabBarLabel: "Explore",
+          tabBarIcon: ({color, size}) => (
             <Ionicons name="search" color={color} size={size} />
           ),
         }}
@@ -26,8 +24,8 @@ const Layout = () => {
       <Tabs.Screen
         name="wishlists"
         options={{
-          tabBarLabel: 'Wishlists',
-          tabBarIcon: ({ color, size }) => (
+          tabBarLabel: "Wishlists",
+          tabBarIcon: ({color, size}) => (
             <Ionicons name="heart-outline" color={color} size={size} />
           ),
         }}
@@ -35,8 +33,8 @@ const Layout = () => {
       <Tabs.Screen
         name="trips"
         options={{
-          tabBarLabel: 'Trips',
-          tabBarIcon: ({ color, size }) => (
+          tabBarLabel: "Trips",
+          tabBarIcon: ({color, size}) => (
             <FontAwesome5 name="airbnb" color={color} size={size} />
           ),
         }}
@@ -44,8 +42,8 @@ const Layout = () => {
       <Tabs.Screen
         name="inbox"
         options={{
-          tabBarLabel: 'Inbox',
-          tabBarIcon: ({ color, size }) => (
+          tabBarLabel: "Inbox",
+          tabBarIcon: ({color, size}) => (
             <MaterialCommunityIcons name="message-outline" color={color} size={size} />
           ),
         }}
@@ -53,8 +51,9 @@ const Layout = () => {
       <Tabs.Screen
         name="profile"
         options={{
-          tabBarLabel: 'Profile',
-          tabBarIcon: ({ color, size }) => (
+          tabBarLabel: "Profile",
+          headerShown: false,
+          tabBarIcon: ({color, size}) => (
             <Ionicons name="person-circle-outline" color={color} size={size} />
           ),
         }}

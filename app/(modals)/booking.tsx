@@ -1,4 +1,12 @@
-import {View, Text, StyleSheet, TouchableOpacity} from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  TextInput,
+  ScrollView,
+  Image,
+} from "react-native";
 import {BlurView} from "expo-blur";
 import {useSafeAreaInsets} from "react-native-safe-area-context";
 import Animated, {FadeIn, SlideInDown} from "react-native-reanimated";
@@ -8,6 +16,7 @@ import {useRouter} from "expo-router";
 import {Ionicons} from "@expo/vector-icons";
 import {useState} from "react";
 import Colors from "@/constants/Colors";
+import {places} from "@/types/places";
 
 const AnimatedTouchableOpacity = Animated.createAnimatedComponent(TouchableOpacity);
 
@@ -43,9 +52,39 @@ const Page = () => {
         )}
 
         {openCard === 0 && (
-          <Animated.View entering={FadeIn}>
-            <Text style={styles.cardHeader}>Where to?</Text>
-          </Animated.View>
+          <>
+            <Animated.Text entering={FadeIn} style={styles.cardHeader}>
+              Where to?
+            </Animated.Text>
+            <Animated.View style={styles.cardBody}>
+              <View style={styles.searchBar}>
+                <Ionicons name={"search-outline"} size={20} color={Colors.dark} />
+                <TextInput style={styles.textInput} placeholder={"Search destination"} />
+              </View>
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={{gap: 25, paddingHorizontal: 20}}>
+                {places.map(({img, title}, index) => {
+                  return (
+                    <TouchableOpacity key={title} onPress={() => setSelectPlace(index)}>
+                      <Image
+                        source={img}
+                        style={selectPlace === index ? styles.placeSelect : styles.place}
+                      />
+                      <Text
+                        style={[
+                          {fontFamily: Fonts.fontNormal, paddingTop: 6},
+                          selectPlace === index ? {fontFamily: Fonts.fontBold} : null,
+                        ]}>
+                        {title}
+                      </Text>
+                    </TouchableOpacity>
+                  );
+                })}
+              </ScrollView>
+            </Animated.View>
+          </>
         )}
       </View>
       {/*WHEN*/}
@@ -175,6 +214,39 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.fontBold,
     fontSize: 24,
     padding: 20,
+  },
+  cardBody: {
+    // paddingHorizontal: 20,
+    paddingBottom: 20,
+  },
+  searchBar: {
+    backgroundColor: "white",
+    flexDirection: "row",
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "gray",
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    gap: 10,
+    height: 50,
+    marginBottom: 16,
+    marginHorizontal: 20,
+  },
+  textInput: {
+    flex: 1,
+    // paddingVertical: 10,
+  },
+  place: {
+    width: 126,
+    height: 126,
+    borderRadius: 10,
+  },
+  placeSelect: {
+    width: 126,
+    height: 126,
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: Colors.gray,
   },
 });
 

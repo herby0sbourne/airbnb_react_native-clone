@@ -18,19 +18,70 @@ import { useState } from "react";
 import Colors from "@/constants/Colors";
 import { places } from "@/types/places";
 import DatePicker from "react-native-modern-datepicker";
+import { useSafeState } from "@clerk/clerk-js/dist/types/ui/hooks";
+import { Color } from "ansi-fragments/build/fragments/Color";
 
 const AnimatedTouchableOpacity = Animated.createAnimatedComponent(TouchableOpacity);
+
+const guestsGroup = [
+  {
+    name: "Adults",
+    text: "Ages 13 or above",
+    count: 0,
+  },
+  {
+    name: "Children",
+    text: "Ages 2-12",
+    count: 0,
+  },
+  {
+    name: "Infants",
+    text: "Under 2",
+    count: 0,
+  },
+  {
+    name: "Pets",
+    text: "Pets allowed",
+    count: 0,
+  },
+];
 
 const Page = () => {
   // const insets = useSafeAreaInsets();
   const router = useRouter();
-  const [openCard, setOpenCard] = useState(1);
+  const [openCard, setOpenCard] = useState(2);
   const [selectPlace, setSelectPlace] = useState(0);
+  const [groups, setGroups] = useState(guestsGroup);
   const today = new Date().toISOString().split("T")[0];
 
   const clearInputFields = () => {
     setOpenCard(0);
     setSelectPlace(0);
+  };
+
+  const addGuest = (index: number) => {
+    const newGroup = [...groups];
+    newGroup[index].count++;
+    setGroups(newGroup);
+  };
+
+  const removeGuest = (index: number) => {
+    const newGroup = [...groups];
+    newGroup[index].count--;
+    setGroups(newGroup);
+  };
+
+  const updateGuest = (type: string, index: number) => {
+    const newGroup = [...groups];
+
+    if (type === "increase") {
+      newGroup[index].count++;
+    }
+
+    if (type === "decrease") {
+      newGroup[index].count--;
+    }
+    setGroups(newGroup);
   };
 
   return (
@@ -140,9 +191,43 @@ const Page = () => {
           </AnimatedTouchableOpacity>
         )}
         {openCard === 2 && (
-          <Animated.View entering={FadeIn}>
-            <Text style={styles.cardHeader}>Who's coming?</Text>
-          </Animated.View>
+          <>
+            <Animated.View entering={FadeIn}>
+              <Text style={styles.cardHeader}>Who's coming?</Text>
+            </Animated.View>
+            <Animated.View style={styles.cardBody}>
+              {groups.map((group, index) => {
+                return (
+                  <View key={group.name} style={styles.group}>
+                    <View>
+                      <Text>{group.name}</Text>
+                      <Text>{group.text}</Text>
+                    </View>
+                    <View style={styles.countWrapper}>
+                      <TouchableOpacity
+                        onPress={() => updateGuest("decrease", index)}
+                        disabled={group.count === 0}
+                      >
+                        <Ionicons
+                          name={"remove-circle-outline"}
+                          size={35}
+                          color={group.count > 0 ? Colors.gray : "#cdcdcd"}
+                        />
+                      </TouchableOpacity>
+                      <Text style={styles.countValue}>{group.count}</Text>
+                      <TouchableOpacity onPress={() => updateGuest("increase", index)}>
+                        <Ionicons
+                          name={"add-circle-outline"}
+                          size={35}
+                          color={Colors.gray}
+                        />
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                );
+              })}
+            </Animated.View>
+          </>
         )}
       </View>
       {/*FOOTER*/}
@@ -269,6 +354,28 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 2,
     borderColor: Colors.gray,
+  },
+  group: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    // padding: 20,
+    marginHorizontal: 20,
+    paddingVertical: 20,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: Colors.gray,
+  },
+  countWrapper: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    justifyContent: "center",
+  },
+  countValue: {
+    fontFamily: Fonts.fontNormal,
+    fontSize: 16,
+    textAlign: "center",
+    minWidth: 18,
   },
 });
 

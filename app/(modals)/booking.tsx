@@ -7,24 +7,26 @@ import {
   ScrollView,
   Image,
 } from "react-native";
-import {BlurView} from "expo-blur";
-import {useSafeAreaInsets} from "react-native-safe-area-context";
-import Animated, {FadeIn, SlideInDown} from "react-native-reanimated";
-import {defaultStyles} from "@/constants/Styles";
+import { BlurView } from "expo-blur";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import Animated, { FadeIn, SlideInDown } from "react-native-reanimated";
+import { defaultStyles } from "@/constants/Styles";
 import Fonts from "@/constants/Fonts";
-import {useRouter} from "expo-router";
-import {Ionicons} from "@expo/vector-icons";
-import {useState} from "react";
+import { useRouter } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
+import { useState } from "react";
 import Colors from "@/constants/Colors";
-import {places} from "@/types/places";
+import { places } from "@/types/places";
+import DatePicker from "react-native-modern-datepicker";
 
 const AnimatedTouchableOpacity = Animated.createAnimatedComponent(TouchableOpacity);
 
 const Page = () => {
-  const insets = useSafeAreaInsets();
+  // const insets = useSafeAreaInsets();
   const router = useRouter();
-  const [openCard, setOpenCard] = useState(0);
+  const [openCard, setOpenCard] = useState(1);
   const [selectPlace, setSelectPlace] = useState(0);
+  const today = new Date().toISOString().split("T")[0];
 
   const clearInputFields = () => {
     setOpenCard(0);
@@ -36,7 +38,8 @@ const Page = () => {
     <BlurView
       intensity={70}
       style={[styles.container]}
-      experimentalBlurMethod={"dimezisBlurView"}>
+      experimentalBlurMethod={"dimezisBlurView"}
+    >
       {/*WHERE*/}
       <View style={styles.card}>
         {openCard !== 0 && (
@@ -64,8 +67,9 @@ const Page = () => {
               <ScrollView
                 horizontal
                 showsHorizontalScrollIndicator={false}
-                contentContainerStyle={{gap: 25, paddingHorizontal: 20}}>
-                {places.map(({img, title}, index) => {
+                contentContainerStyle={{ gap: 25, paddingHorizontal: 20 }}
+              >
+                {places.map(({ img, title }, index) => {
                   return (
                     <TouchableOpacity key={title} onPress={() => setSelectPlace(index)}>
                       <Image
@@ -74,9 +78,10 @@ const Page = () => {
                       />
                       <Text
                         style={[
-                          {fontFamily: Fonts.fontNormal, paddingTop: 6},
-                          selectPlace === index ? {fontFamily: Fonts.fontBold} : null,
-                        ]}>
+                          { fontFamily: Fonts.fontNormal, paddingTop: 6 },
+                          selectPlace === index ? { fontFamily: Fonts.fontBold } : null,
+                        ]}
+                      >
                         {title}
                       </Text>
                     </TouchableOpacity>
@@ -101,9 +106,24 @@ const Page = () => {
           </AnimatedTouchableOpacity>
         )}
         {openCard === 1 && (
-          <Animated.View entering={FadeIn}>
-            <Text style={styles.cardHeader}>when's your trip</Text>
-          </Animated.View>
+          <>
+            <Animated.View entering={FadeIn}>
+              <Text style={styles.cardHeader}>When's your trip</Text>
+            </Animated.View>
+            <Animated.View style={styles.cardBody}>
+              <DatePicker
+                mode="calendar"
+                options={{
+                  defaultFont: Fonts.fontNormal,
+                  headerFont: Fonts.fontSemiBold,
+                  borderColor: "transparent",
+                  mainColor: Colors.primary,
+                }}
+                current={today}
+                selected={today}
+              />
+            </Animated.View>
+          </>
         )}
       </View>
       {/*WHO*/}
@@ -132,7 +152,8 @@ const Page = () => {
             flexDirection: "row",
             justifyContent: "space-between",
             alignItems: "center",
-          }}>
+          }}
+        >
           <TouchableOpacity onPress={clearInputFields}>
             <Text style={styles.text}>Clear All</Text>
           </TouchableOpacity>
@@ -146,7 +167,8 @@ const Page = () => {
                 paddingHorizontal: 20,
                 gap: 10,
               },
-            ]}>
+            ]}
+          >
             <Ionicons
               name={"search-outline"}
               size={24}

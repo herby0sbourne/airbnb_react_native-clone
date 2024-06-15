@@ -1,15 +1,20 @@
-import { Ionicons } from "@expo/vector-icons";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
+import { useEffect } from "react";
 import { useFonts } from "expo-font";
+import Constants from "expo-constants";
+import { Ionicons } from "@expo/vector-icons";
 import { Stack, useRouter } from "expo-router";
+import { TouchableOpacity } from "react-native";
+import { ClerkProvider, useAuth } from "@clerk/clerk-expo";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+
 import * as SplashScreen from "expo-splash-screen";
 import * as SecureStore from "expo-secure-store";
-import { useEffect } from "react";
-import { TouchableOpacity } from "react-native";
-import Constants from "expo-constants";
-import { ClerkProvider, useAuth } from "@clerk/clerk-expo";
+
+import ModalHeaderText from "@/components/ModalHeaderText";
+
 import Fonts from "@/constants/Fonts";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
+import Colors from "@/constants/Colors";
 
 const tokenCache = {
   async getToken(key: string) {
@@ -115,10 +120,22 @@ function RootLayoutNav() {
         name="(modals)/booking"
         options={{
           presentation: "transparentModal",
+          headerTransparent: true,
           animation: "fade",
+          headerBackVisible: false,
+          headerTitle: () => <ModalHeaderText />,
           headerLeft: () => (
-            <TouchableOpacity onPress={() => router.back()}>
-              <Ionicons name="close-outline" size={28} />
+            <TouchableOpacity
+              onPress={() => router.back()}
+              style={{
+                backgroundColor: "white",
+                borderColor: Colors.gray,
+                borderRadius: 20,
+                borderWidth: 1,
+                padding: 2,
+              }}
+            >
+              <Ionicons name="close-outline" size={22} />
             </TouchableOpacity>
           ),
         }}

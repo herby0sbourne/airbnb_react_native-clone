@@ -2,17 +2,16 @@ import { Stack } from "expo-router";
 import { View } from "react-native";
 import { useMemo, useState } from "react";
 
-import Listings from "@/components/Listings";
 import ListingsMap from "@/components/ListingsMap";
 import ExploreHeader from "@/components/ExploreHeader";
+import ListingsBottomSheet from "@/components/ListingsBottomSheet";
 
 import { Listing } from "@/types";
-import listingsData from "@/assets/data/air-bnb-listings.json";
-// import listingsDataGeo from "@/assets/data/airbnb-listings.geo.json";
+import { ListWIthImage } from "@/utils/formatListing";
 
 const Page = () => {
   const [category, setCategory] = useState("Tiny Home");
-  const items = useMemo(() => listingsData as Listing[], []);
+  const items = useMemo(() => ListWIthImage(), []);
 
   const handleCategoryChange = (category: string) => {
     setCategory(category);
@@ -22,13 +21,11 @@ const Page = () => {
     <View style={{ flex: 1 }}>
       <Stack.Screen
         options={{
-          header: () => (
-            <ExploreHeader onCategoryChange={handleCategoryChange} />
-          ),
+          header: () => <ExploreHeader onCategoryChange={handleCategoryChange} />,
         }}
       />
-      {/*<Listings category={category} listings={items.toSpliced(2)} />*/}
       <ListingsMap listings={items as Listing[]} />
+      <ListingsBottomSheet listings={items} category={category} />
     </View>
   );
 };

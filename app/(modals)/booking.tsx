@@ -18,8 +18,6 @@ import { useState } from "react";
 import Colors from "@/constants/Colors";
 import { places } from "@/types/places";
 import DatePicker from "react-native-modern-datepicker";
-import { useSafeState } from "@clerk/clerk-js/dist/types/ui/hooks";
-import { Color } from "ansi-fragments/build/fragments/Color";
 
 const AnimatedTouchableOpacity = Animated.createAnimatedComponent(TouchableOpacity);
 
@@ -49,7 +47,7 @@ const guestsGroup = [
 const Page = () => {
   // const insets = useSafeAreaInsets();
   const router = useRouter();
-  const [openCard, setOpenCard] = useState(2);
+  const [openCard, setOpenCard] = useState(0);
   const [selectPlace, setSelectPlace] = useState(0);
   const [groups, setGroups] = useState(guestsGroup);
   const today = new Date().toISOString().split("T")[0];
@@ -57,18 +55,7 @@ const Page = () => {
   const clearInputFields = () => {
     setOpenCard(0);
     setSelectPlace(0);
-  };
-
-  const addGuest = (index: number) => {
-    const newGroup = [...groups];
-    newGroup[index].count++;
-    setGroups(newGroup);
-  };
-
-  const removeGuest = (index: number) => {
-    const newGroup = [...groups];
-    newGroup[index].count--;
-    setGroups(newGroup);
+    setGroups(guestsGroup);
   };
 
   const updateGuest = (type: string, index: number) => {
@@ -198,10 +185,17 @@ const Page = () => {
             <Animated.View style={styles.cardBody}>
               {groups.map((group, index) => {
                 return (
-                  <View key={group.name} style={styles.group}>
+                  <View
+                    key={group.name}
+                    style={[styles.group, index + 1 === groups.length && styles.noBorder]}
+                  >
                     <View>
-                      <Text>{group.name}</Text>
-                      <Text>{group.text}</Text>
+                      <Text style={[styles.fontText, { fontFamily: Fonts.fontSemiBold }]}>
+                        {group.name}
+                      </Text>
+                      <Text style={[styles.fontText, { color: Colors.gray }]}>
+                        {group.text}
+                      </Text>
                     </View>
                     <View style={styles.countWrapper}>
                       <TouchableOpacity
@@ -376,6 +370,14 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: "center",
     minWidth: 18,
+  },
+  fontText: {
+    fontFamily: Fonts.fontNormal,
+    fontSize: 14,
+  },
+  noBorder: {
+    borderColor: "transparent",
+    paddingBottom: 0,
   },
 });
 
